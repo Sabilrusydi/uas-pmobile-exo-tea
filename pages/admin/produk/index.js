@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import AdminLayout from '../../../components/AdminLayout'; // FIX: Ditambahkan import
 
 export default function AdminProduk() {
     const [products, setProducts] = useState([]);
@@ -40,14 +39,11 @@ export default function AdminProduk() {
                         </tr>
                     </thead>
                     <tbody>
-                        {products.map(product => (
+                        {products && products.map(product => (
                             <tr key={product.id} className="border-b">
                                 <td className="py-2 px-4">{product.name}</td>
                                 <td className="py-2 px-4">Rp {Number(product.price).toLocaleString('id-ID')}</td>
                                 <td className="py-2 px-4">
-                                    {/* <Link href={`/admin/produk/edit/${product.id}`}>
-                                        <a className="text-blue-500 hover:underline mr-4">Edit</a>
-                                    </Link> */}
                                     <button onClick={() => handleDelete(product.id)} className="text-red-500 hover:underline">Hapus</button>
                                 </td>
                             </tr>
@@ -58,5 +54,3 @@ export default function AdminProduk() {
         </div>
     );
 }
-
-AdminProduk.getLayout = (page) => <AdminLayout>{page}</AdminLayout>;
