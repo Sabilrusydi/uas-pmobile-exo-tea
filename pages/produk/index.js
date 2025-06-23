@@ -1,56 +1,53 @@
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { db } from '../../lib/firebase';
+import { collection, getDocs } from 'firebase/firestore';
 
-export default function AdminProduk() {
-    const [products, setProducts] = useState([]);
-    
-    async function fetchProducts() {
-        const res = await fetch('/api/produk');
-        const data = await res.json();
-        setProducts(data);
+export default function ProdukPage({ products }) {
+  return (
+    <div>
+      <h1 className="text-3xl font-bold mb-6">Menu Kami</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {products && products.map((product) => (
+          <Link href={`/produk/${product.id}`} key={product.id}>
+            <a className="border rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <div className="relative w-full h-48">
+                <Image
+                  src={product.imageUrl || 'https://placehold.co/400x300/E2E8F0/A0AEC0?text=EXO+TEA'}
+                  alt={product.name}
+                  layout="fill"
+                  objectFit="cover"
+                />
+              </div>
+              <div className="p-4">
+                <h2 className="text-lg font-semibold">{product.name}</h2>
+                <p className="text-gray-600 mt-2">Rp {Number(product.price).toLocaleString('id-ID')}</p>
+              </div>
+            </a>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export async function getServerSideProps() {
+    try {
+        const productsCol = collection(db, 'products');
+        const productSnapshot = await getDocs(productsCol);
+        const products = productSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+        return {
+            props: {
+                products: JSON.parse(JSON.stringify(products)), 
+            },
+        };
+    } catch (error) {
+        console.error("Error fetching products: ", error);
+        return {
+            props: {
+                products: [],
+            },
+        };
     }
-
-    useEffect(() => {
-        fetchProducts();
-    }, []);
-    
-    const handleDelete = async (id) => {
-        if (window.confirm("Apakah Anda yakin ingin menghapus produk ini?")) {
-            await fetch(`/api/produk/${id}`, { method: 'DELETE' });
-            fetchProducts();
-        }
-    }
-
-    return (
-        <div className="bg-white p-6 rounded-lg shadow-md">
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">Manajemen Produk</h1>
-                <Link href="/admin/produk/tambah">
-                    <a className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Tambah Produk</a>
-                </Link>
-            </div>
-            <div className="overflow-x-auto">
-                <table className="min-w-full bg-white">
-                    <thead className="bg-gray-200">
-                        <tr>
-                            <th className="py-2 px-4 text-left">Nama</th>
-                            <th className="py-2 px-4 text-left">Harga</th>
-                            <th className="py-2 px-4 text-left">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {products && products.map(product => (
-                            <tr key={product.id} className="border-b">
-                                <td className="py-2 px-4">{product.name}</td>
-                                <td className="py-2 px-4">Rp {Number(product.price).toLocaleString('id-ID')}</td>
-                                <td className="py-2 px-4">
-                                    <button onClick={() => handleDelete(product.id)} className="text-red-500 hover:underline">Hapus</button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    );
 }
