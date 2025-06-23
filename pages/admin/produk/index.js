@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import AdminLayout from '../../../components/AdminLayout'; // FIX: Ditambahkan import
 
 export default function AdminProduk() {
     const [products, setProducts] = useState([]);
