@@ -1,5 +1,4 @@
 import { useSession } from 'next-auth/react';
-import AdminLayout from '../../components/AdminLayout'; // FIX: Ditambahkan import
 
 export default function AdminDashboard() {
   const { data: session } = useSession();
@@ -11,8 +10,4 @@ export default function AdminDashboard() {
       <p>Anda login sebagai <span className="font-semibold capitalize">{session?.user?.role}</span>.</p>
     </div>
   );
-}
-
-AdminDashboard.getLayout = (page) => {
-    return <AdminLayout>{page}</AdminLayout>
 }
