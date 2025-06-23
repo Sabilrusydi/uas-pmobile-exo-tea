@@ -13,7 +13,6 @@ export default function TambahProduk() {
         e.preventDefault();
         setUploading(true);
 
-        // 1. Upload image to Cloudinary
         let imageUrl = '';
         if (image) {
             const formData = new FormData();
@@ -33,7 +32,6 @@ export default function TambahProduk() {
             }
         }
 
-        // 2. Save product data to Firebase
         const productData = { name, description, price: Number(price), imageUrl };
         await fetch('/api/produk', {
             method: 'POST',
