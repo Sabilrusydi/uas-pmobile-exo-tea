@@ -1,4 +1,5 @@
 import { useSession } from 'next-auth/react';
+import AdminLayout from '../../components/AdminLayout'; // FIX: Ditambahkan import
 
 export default function AdminDashboard() {
   const { data: session } = useSession();
