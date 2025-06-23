@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import AdminLayout from '../../../components/AdminLayout'; // FIX: Ditambahkan import
 
 export default function TambahProduk() {
     const [name, setName] = useState('');
@@ -73,5 +72,3 @@ export default function TambahProduk() {
         </div>
     );
 }
-
-TambahProduk.getLayout = (page) => <AdminLayout>{page}</AdminLayout>;
