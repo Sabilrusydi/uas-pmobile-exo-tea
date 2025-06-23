@@ -1,33 +1,29 @@
 import '../styles/globals.css';
 import { SessionProvider } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import AdminLayout from '../components/AdminLayout';
 import Layout from '../components/Layout';
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
-  // Gunakan layout yang berbeda berdasarkan halaman
-  const getLayout = () => {
-    if (Component.getLayout) {
-      return Component.getLayout(<Component {...pageProps} />);
-    }
+  const router = useRouter();
 
-    if (pageProps.isAdminPage) {
-      return (
+  // Jika path halaman dimulai dengan /admin, gunakan AdminLayout
+  if (router.pathname.startsWith('/admin')) {
+    return (
+      <SessionProvider session={session}>
         <AdminLayout>
           <Component {...pageProps} />
         </AdminLayout>
-      );
-    }
+      </SessionProvider>
+    );
+  }
 
-    return (
+  // Jika tidak, gunakan Layout standar untuk user
+  return (
+    <SessionProvider session={session}>
       <Layout>
         <Component {...pageProps} />
       </Layout>
-    );
-  };
-
-  return (
-    <SessionProvider session={session}>
-      {getLayout()}
     </SessionProvider>
   );
 }
